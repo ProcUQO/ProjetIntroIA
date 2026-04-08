@@ -1,0 +1,7 @@
+from questions import generateQuestion
+# par Camilien
+# Fichier TRÈS temporaire!!! Simplement pour tester en print le fonctionnement des questions, répétition, bref juste pour tester
+# avant l'implémentation de l'interface :)
+for i in range(10):
+    q, a = generateQuestion()
+    print(f"Question: {q}, réponse: {a}")
