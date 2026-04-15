@@ -62,10 +62,10 @@ def prochaine():
 app = gui.Tk()
 app.geometry("1000x600")
 app.configure(background='lightgray')
-app.title("Brain age project")
+app.title("Projet inspiré de Brain Age par Yannick, William et Camilien")
 
 #Le titre principal de notre application
-titre = gui.Label(app, text="Brain Age Test", font=('Arial', 18))
+titre = gui.Label(app, text="Dessinez dans la zone bleu votre réponse", font=('Arial', 18))
 titre.configure(background='lightgray')
 titre.pack()
 
@@ -103,7 +103,7 @@ def ClearDessin():
     frameDessin.delete('all')
 
 #crée un bouton pour effacer notre réponse si on s'est tromper
-clearButton = gui.Button(conteneurDessin, text='Clear', width=42, command=ClearDessin)
+clearButton = gui.Button(conteneurDessin, text='Réinitialiser', width=42, command=ClearDessin)
 clearButton.configure(background='lightgreen')
 
 # Bouton pour valider la question, sinon c'est dur de jouer hahaha

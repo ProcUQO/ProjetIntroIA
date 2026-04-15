@@ -68,7 +68,7 @@ def generateDivision():
 def generateEmoji():
     answer = random.randint(2,9)
     stories=[
-        ("Oh non!\nJoe l'fermier a perdu le contrôle de ses boeufs!\nPeux-tu lui dire combien il en a perdu?", "🐂"),
+        ("Oh non!\nJoe le fermier a perdu le contrôle de ses boeufs!\nPeux-tu lui dire combien il en a perdu?", "🐂"),
         ("La poissonière compte ses poissons,\nmais elle est pas très bonne en maths.\n Peux-tu l'aider?", "🐟"),
         ("Etienne est découragé, \ndes taouins sont arrivés en retard.\n Étant (naturellement) fatigué, \npeux-tu compter les présences pour lui?", "🧍"),
         ("Omer veut faire peur aux nouveaux étudiants.\nLa nouvelle stratégie à la mode?\nLes fantômes, bien sûr!\nPeux-tu lui faire un retour sur le \nnombre de participants? ", "👻")
@@ -101,7 +101,15 @@ def generateNB():
         "produit manmade",
         "kevin",
         "frappé aux ananas",
-        "microsoft"
+        "microsoft",
+        "electro-encephalographie",
+        "mississippi",
+        "couscous",
+        "abracadabra",
+        "murmuration",
+        "assassin",
+        "cocorico",
+        "coloscopie"
     ]
     motChoisi=random.choice(mots)
     lettres = [c for c in set(motChoisi) if c != " "] # je déteste les caractères vide, on filter ça dehors
