@@ -40,9 +40,6 @@ def valider():
     print("La réponse attendue:", current_answer)
     feedbackLabel.config(text=feedback)
 
-    # rajouter réseau neurones
-    nouvelleQuestion()
-
 def prochaine():
     global drawing_enabled
     drawing_enabled = True
