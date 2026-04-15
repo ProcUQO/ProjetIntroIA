@@ -2,7 +2,7 @@
 # par Camilien
 import random
 
-TYPES=["Addition","Soustraction","Multiplication","Division"]
+TYPES=["Addition","Soustraction","Division"]
 lastTypes = [] # Je vais garder en mémoire la 1 ou 2ème dernière question pour pas qu'elle se répète trop
 
 def choisirType():
@@ -52,4 +52,8 @@ def generateDivision():
     b = random.randint(1,9)
     a = answer * b
 
+    # Je reroll simplement si la réponse est zéro, parce que c'est impossible, simplement!
+    if answer == 0:
+        return generateDivision()
+    
     return f"{a} ÷ {b}", str(answer)

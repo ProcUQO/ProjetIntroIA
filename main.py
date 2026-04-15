@@ -1,4 +1,24 @@
 import tkinter as gui
+from questions import generateQuestion
+
+# Pas de question encore sur le wake
+current_answer = None;
+
+# Utilise questions.py pour faire une question
+def nouvelleQuestion():
+    global current_answer
+
+    q, a = generateQuestion()
+    current_answer = a
+    textQuestion.config(text=q)
+    # Je nettoie la zone à dessin à chaque nouvelle question, comme sur le jeu original
+    ClearDessin() 
+
+# Temporaire, Yannick va pouvoir plugger la prédiction ici
+def valider():
+    print("La réponse attendue:", current_answer)
+    # rajouter réseau neurones
+    nouvelleQuestion()
 
 #voilà les info et dimension de l'écran de l'application
 app = gui.Tk()
@@ -30,11 +50,12 @@ frameQuestion.rowconfigure(0, minsize= 465)
 conteneurDessin = gui.Frame(frameGeneral)
 conteneurDessin.configure(background='lightgrey')
 conteneurDessin.columnconfigure(0, minsize=300)
-conteneurDessin.rowconfigure(0, minsize= 300)
+conteneurDessin.rowconfigure(0, minsize=275)
 conteneurDessin.rowconfigure(1, minsize= 25)
+conteneurDessin.rowconfigure(2, minsize=25)
 
 #créé un canevas pour qu'on puisse répondre au question en dessinant
-frameDessin = gui.Canvas(conteneurDessin, width=300, height= 435)
+frameDessin = gui.Canvas(conteneurDessin, width=300, height= 410)
 frameDessin.configure(background='lightBlue')
 
 #Permet d'effacer notre réponse si on c'est tromper
@@ -46,6 +67,11 @@ def ClearDessin():
 #crée un bouton pour effacer notre réponse si on s'est tromper
 clearButton = gui.Button(conteneurDessin, text='Clear', width=42, command=ClearDessin)
 clearButton.configure(background='lightgreen')
+
+# Bouton pour valider la question, sinon c'est dur de jouer hahaha
+validerButton = gui.Button(conteneurDessin, text='Valider', width=42, command=valider)
+validerButton.configure(background='lightblue')
+validerButton.grid(row=2, column=0)
 
 #Affiche un texte dans la grid de nos question
 textQuestion = gui.Label(frameQuestion, text="Zone de questions", font=('Arial', 16))
