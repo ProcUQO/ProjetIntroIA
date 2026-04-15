@@ -5,6 +5,8 @@ from questions import generateQuestion
 current_answer = None;
 # Pour les transitions, pas besoin de dessiner quand on nous donne le résultat
 drawing_enabled = True;
+# Comme dans l'un de nos projets prédécent, on relie les points avec les précédents en ligne
+last_x, last_y = None, None
 
 # Utilise questions.py pour faire une question
 def nouvelleQuestion():
@@ -136,17 +138,30 @@ conteneurDessin.grid(row=0, column=1)
 frameDessin.grid(row=0, column=0)
 clearButton.grid(row=1, column=0)
 
+#Pour gérer le pas, sinon il aurait des gros espaces vide en dessinant vite (inspiré d'un projet java que nous avions fait en INF1163)
+def startDrawing(event):
+    global last_x, last_y
+    last_x, last_y = event.x, event.y
 
 #permet d'instancier des rectangles de grosseur défini quand on maintien le click.
 def Drawing(event):
+    global last_x, last_y
+
     if not drawing_enabled:
         return
-    posX = event.x
-    posY = event.y
     
-    frameDessin.create_rectangle((posX,posY),(posX+2,posY+2), fill='black')
+    if last_x is not None: # je check pas le y parce que le x est suffisant
+        frameDessin.create_line(last_x, last_y, event.x, event.y, width=6, fill='black', capstyle=gui.ROUND, smooth=True)
+    last_x, last_y = event.x, event.y
 
+def stopDrawing(event):
+    global last_x, last_y
+    last_x, last_y = None, None
+
+# bindigns
+frameDessin.bind("<Button-1>", startDrawing)
 frameDessin.bind("<B1-Motion>", Drawing)
+frameDessin.bind("<ButtonRelease-1>", stopDrawing)
 
 # À NE PAS GARDER!! Va être remplacé par le chiffre trouvé par le réseau de neurone, donne toujours 4 en attendant
 # Peut être pour le debugging, mais Yannick a peut-être sa propre méthode pour débogger le chiffre
