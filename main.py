@@ -1,4 +1,6 @@
 import tkinter as gui
+from PIL import Image, ImageDraw # imageGrab (le screenshot) aurait aussi fonctionné, mais finalement on dessine l'image en même temps que le canvas
+import io
 from questions import generateQuestion
 
 # Pas de question encore sur le wake
@@ -7,6 +9,11 @@ current_answer = None;
 drawing_enabled = True;
 # Comme dans l'un de nos projets prédécent, on relie les points avec les précédents en ligne
 last_x, last_y = None, None
+
+image = Image.new("L", (300, 440), "white")
+draw = ImageDraw.Draw(image)
+tailleCanvas=(300,440) # j'y toucherais plus trop
+tailleNN=(28,28)
 
 # Utilise questions.py pour faire une question
 def nouvelleQuestion():
@@ -32,8 +39,10 @@ def valider():
     okButton.grid(row=2, column=0)  # Place le bouton OK à la place de Valider
     okButton.config(state="normal")
 
-    # encore une fois, temporaire à mort
+    # Si ceci ne fonctionne pas, remettre le temporaire
+    img = preprocess_image()
     prediction = predictionTEMPORAIRE()
+
     if prediction == current_answer:
         feedback = f"Bonne réponse! ({prediction})"
     else:
@@ -41,6 +50,7 @@ def valider():
     # Debug
     print("La réponse attendue:", current_answer)
     feedbackLabel.config(text=feedback)
+    img.save("imageDebug.png")
 
 def prochaine():
     global drawing_enabled
@@ -59,6 +69,12 @@ def prochaine():
     # Nouvelle question
     nouvelleQuestion()
 
+# Génère l'image (l'affiche pas en debug par contre, c'est dans valider). C'est une image 28x28, 100% pour le NN.
+def preprocess_image():
+    img = image.copy()
+    img = img.resize((tailleNN))
+    img = img.point(lambda x: 0 if x < 200 else 255) #pris de stackoverflow, c'est du tresholding d'image pour avoir un meileur contraste
+    return img
 
 #voilà les info et dimension de l'écran de l'application
 app = gui.Tk()
@@ -67,7 +83,7 @@ app.configure(background='lightgray')
 app.title("Projet inspiré de Brain Age par Yannick, William et Camilien")
 
 #Le titre principal de notre application
-titre = gui.Label(app, text="Dessinez dans la zone bleu votre réponse", font=('Arial', 18))
+titre = gui.Label(app, text="Dessinez dans la zone bleue votre réponse", font=('Arial', 18))
 titre.configure(background='lightgray')
 titre.pack()
 
@@ -96,13 +112,17 @@ conteneurDessin.rowconfigure(2, minsize=25)
 
 #créé un canevas pour qu'on puisse répondre au question en dessinant
 frameDessin = gui.Canvas(conteneurDessin, width=300, height= 440)
-frameDessin.configure(background='lightBlue')
+# frameDessin.configure(background='lightBlue')
 
 #Permet d'effacer notre réponse si on c'est tromper
 #Ou on peut l'utiliser quand on change de question
 def ClearDessin():
     print('Je delete')
     frameDessin.delete('all')
+    # on reset aussi l'image. Pourrait être sa propre fonction
+    global image, draw
+    image = Image.new("L", tailleCanvas, "white")
+    draw = ImageDraw.Draw(image)
 
 #crée un bouton pour effacer notre réponse si on s'est tromper
 clearButton = gui.Button(conteneurDessin, text='Réinitialiser', width=42, command=ClearDessin)
@@ -152,6 +172,8 @@ def Drawing(event):
     
     if last_x is not None: # je check pas le y parce que le x est suffisant
         frameDessin.create_line(last_x, last_y, event.x, event.y, width=6, fill='black', capstyle=gui.ROUND, smooth=True)
+        # on dessine dans l'image en même temps (si le width est changé, please le changer en haut aussi. Garder fill=0 pour grayscale.)
+        draw.line([last_x, last_y, event.x, event.y], fill=0, width=6)
     last_x, last_y = event.x, event.y
 
 def stopDrawing(event):
