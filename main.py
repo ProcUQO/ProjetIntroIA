@@ -83,7 +83,7 @@ app.configure(background='lightgray')
 app.title("Projet inspiré de Brain Age par Yannick, William et Camilien")
 
 #Le titre principal de notre application
-titre = gui.Label(app, text="Dessinez dans la zone bleue votre réponse", font=('Arial', 18))
+titre = gui.Label(app, text="Dessinez dans la zone blanche votre réponse", font=('Arial', 18))
 titre.configure(background='lightgray')
 titre.pack()
 
