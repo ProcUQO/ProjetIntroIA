@@ -1,7 +1,8 @@
 import tkinter as gui
-from PIL import Image, ImageDraw # imageGrab (le screenshot) aurait aussi fonctionné, mais finalement on dessine l'image en même temps que le canvas
-import io
+from PIL import Image, ImageDraw, ImageEnhance # imageGrab (le screenshot) aurait aussi fonctionné, mais finalement on dessine l'image en même temps que le canvas
+import numpy as np
 from questions import generateQuestion
+from nn import NN
 
 # Pas de question encore sur le wake
 current_answer = None;
@@ -26,7 +27,11 @@ def nouvelleQuestion():
     ClearDessin() 
 
 # Temporaire, Yannick va pouvoir plugger la prédiction ici
+success = 0
+total = 0
 def valider():
+    global success
+    global total
     # On passe en mode révision de réponse
     global drawing_enabled
     drawing_enabled = False
@@ -41,16 +46,20 @@ def valider():
 
     # Si ceci ne fonctionne pas, remettre le temporaire
     img = preprocess_image()
-    prediction = predictionTEMPORAIRE()
+    prediction = getModelPrediction(img)
 
+    total += 1
     if prediction == current_answer:
+        success += 1
         feedback = f"Bonne réponse! ({prediction})"
     else:
-        feedback = f"Faux! Réponse lue: ({prediction}), la bonne réponse est {current_answer}"
+        feedback = f"Faux! La bonne réponse est {current_answer}"
+    feedback += f"\nScore: {success}/{total} ({success / total * 100}%)"
+    
     # Debug
+    print("La réponse lue:", prediction)
     print("La réponse attendue:", current_answer)
     feedbackLabel.config(text=feedback)
-    img.save("imageDebug.png")
 
 def prochaine():
     global drawing_enabled
@@ -73,7 +82,7 @@ def prochaine():
 def preprocess_image():
     img = image.copy()
     img = img.resize((tailleNN))
-    img = img.point(lambda x: 0 if x < 200 else 255) #pris de stackoverflow, c'est du tresholding d'image pour avoir un meileur contraste
+    img = img.point(lambda x: 255 if x < 230 else 0) #pris de stackoverflow, c'est du tresholding d'image pour avoir un meileur contraste
     return img
 
 #voilà les info et dimension de l'écran de l'application
@@ -180,15 +189,19 @@ def stopDrawing(event):
     global last_x, last_y
     last_x, last_y = None, None
 
-# bindigns
+# bindings
 frameDessin.bind("<Button-1>", startDrawing)
 frameDessin.bind("<B1-Motion>", Drawing)
 frameDessin.bind("<ButtonRelease-1>", stopDrawing)
 
-# À NE PAS GARDER!! Va être remplacé par le chiffre trouvé par le réseau de neurone, donne toujours 4 en attendant
-# Peut être pour le debugging, mais Yannick a peut-être sa propre méthode pour débogger le chiffre
-def predictionTEMPORAIRE():
-    return str(4)
+nn = NN(0.01, 784, 2, 64, 10)
+nn.load('mnist_model')
+
+def getModelPrediction(img):
+    a = np.array(img).reshape(784) / 255.0
+    vOutput = nn.evaluate(a)
+    print(vOutput)
+    return np.argmax(vOutput)
 
 # question du startup
 nouvelleQuestion() 

@@ -44,14 +44,14 @@ def generateAddition():
     a = random.randint(0, answer)
     b = answer - a
 
-    return f"{a} + {b}", str(answer)
+    return f"{a} + {b}", answer
 
 def generateSoustraction():
     answer = random.randint(0,9) # entre 0 et 9 pour un seul caractère
     b = random.randint(0, 9)
     a = answer + b
 
-    return f"{a} - {b}", str(answer)
+    return f"{a} - {b}", answer
 
 def generateDivision():
     answer = random.randint(0,9)
@@ -62,7 +62,7 @@ def generateDivision():
     if answer == 0:
         return generateDivision()
     
-    return f"{a} ÷ {b}", str(answer)
+    return f"{a} ÷ {b}", answer
 
 # Question plus visuelle mais aléatoire. Pis non, y'aura pas de variante seahorse. Et oui, c'est cursed des emojis dans du code.
 def generateEmoji():
@@ -75,7 +75,7 @@ def generateEmoji():
     ]
 
     texte, emoji = random.choice(stories)
-    return f"{texte}\n{emoji * answer}", str(answer)
+    return f"{texte}\n{emoji * answer}", answer
 
 def generateSuite():
     answer=random.randint(0,9)
@@ -84,7 +84,7 @@ def generateSuite():
     if start < 0:
         return generateSuite()
     # devrait pas dépasser 9, fight me, sinon jvous laisse me briser les os
-    return f"{start},{start+saut},{start+2*saut}, ?", str(answer)
+    return f"{start},{start+saut},{start+2*saut}, ?", answer
 
 # La preuve que notre IA est la best, c'est qu'elle sait compter des lettres. Vous êtes libres d'ajouter des mots.
 # IMPORTANT, pas de majuscules!! J'veux pas faire de confusion sur si une majuscule ça compte ou non!!
@@ -115,4 +115,4 @@ def generateNB():
     lettres = [c for c in set(motChoisi) if c != " "] # je déteste les caractères vide, on filter ça dehors
     lettre=random.choice(lettres) # prend un caractère, parce que le random, c'est awesome
     answer=motChoisi.count(lettre)
-    return f"Combien de '{lettre}' dans '{motChoisi}'?", str(answer)
+    return f"Combien de '{lettre}' dans '{motChoisi}'?", answer
